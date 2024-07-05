@@ -1,0 +1,202 @@
+.container{
+    width:220px;
+    height:310px;
+    transition: all 0.1s;
+    position: relative;
+}
+.container1{
+    margin-left: 50px;
+    width:220px;
+    height:310px;
+    transition: all 0.1s;
+    position: relative;
+}
+
+.container2{
+    margin-left: 50px;
+    width:220px;
+    height:310px;
+    transition: all 0.1s;
+    position: relative;
+}
+
+.container3{
+    margin-left: 50px;
+    width:220px;
+    height:310px;
+    transition: all 0.1s;
+    position: relative;
+}
+.container4{
+    margin-left: 50px;
+    width:220px;
+    height:310px;
+    transition: all 0.1s;
+    position: relative;
+}
+
+
+.pokemon{
+    opacity: 100%;
+    width:440px;
+    height: 620px;
+    background-image: url(pokemon.jpg);
+    background-size: cover;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    max-width: 100%;
+    max-height: 100%;
+}
+
+.pokemon1{
+    opacity: 100%;
+    width:440px;
+    height: 620px;
+    background-image: url(poekmon1.png);
+    background-size: cover;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    max-width: 100%;
+    max-height: 100%;
+}
+
+.pokemon2{
+    opacity: 100%;
+    width:440px;
+    height: 620px;
+    background-image: url(pokemon2.png);
+    background-size: cover;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    max-width: 100%;
+    max-height: 100%;
+}
+
+.pokemon3{
+    opacity: 100%;
+    width:440px;
+    height: 620px;
+    background-image: url(pokemon3.png);
+    background-size: cover;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    max-width: 100%;
+    max-height: 100%;
+}
+.pokemon4{
+    opacity: 100%;
+    width:440px;
+    height: 620px;
+    background-image: url(pokemon4.png);
+    background-size: cover;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    max-width: 100%;
+    max-height: 100%;
+}
+
+.card{
+    width:220px;
+    height:310px;
+    background-image: url(pokemon.jpg);
+    background-size: cover;
+}
+
+.card1{
+    width:220px;
+    height:310px;
+    background-image: url(poekmon1.png);
+    background-size: cover;
+}
+
+.card2{
+    width:220px;
+    height:310px;
+    background-image: url(pokemon2.png);
+    background-size: cover;
+}
+
+.card3{
+    width:220px;
+    height:310px;
+    background-image: url(pokemon3.png);
+    background-size: cover;
+}
+.card4{
+    width:220px;
+    height:310px;
+    background-image: url(pokemon4.png);
+    background-size: cover;
+}
+
+
+.overlay{
+    position: absolute;
+    width:220px;
+    height:310px;
+    background: linear-gradient(150deg,transparent 40%, rgba(255,219,112,0.8) 45%,rgba(132,50,255,0.6) 50%,transparent 54%);
+   filter: brightness(1.2) opacity(0.8);
+    mix-blend-mode:color-dodge ;
+    background-size: 150% 150%;
+    background-position: 100%;
+    transition: all 0.01s;
+}
+
+.overlay1{
+    position: absolute;
+    width:220px;
+    height:310px;
+    background: linear-gradient(150deg,transparent 40%, rgba(255,219,112,0.8) 45%,rgba(132,50,255,0.6) 50%,transparent 54%);
+    filter: brightness(1.2) opacity(0.8);
+    mix-blend-mode:color-dodge ;
+    background-size: 150% 150%;
+    background-position: 100%;
+    transition: all 0.01s;
+}
+
+
+.overlay2{
+    position: absolute;
+    width:220px;
+    height:310px;
+    background: linear-gradient(150deg,transparent 40%, rgba(255,219,112,0.8) 45%,rgba(132,50,255,0.6) 50%,transparent 54%);
+    filter: brightness(1.2) opacity(0.8);
+    mix-blend-mode:color-dodge ;
+    background-size: 150% 150%;
+    background-position: 100%;
+    transition: all 0.01s;
+}
+
+.overlay3{
+    position: absolute;
+    width:220px;
+    height:310px;
+    background: linear-gradient(150deg,transparent 40%, rgba(255,219,112,0.8) 45%,rgba(132,50,255,0.6) 50%,transparent 54%);
+    filter: brightness(1.2) opacity(0.8);
+    mix-blend-mode:color-dodge ;
+    background-size: 150% 150%;
+    background-position: 100%;
+    transition: all 0.01s;
+}
+
+.overlay4{
+    position: absolute;
+    width:220px;
+    height:310px;
+    background: linear-gradient(150deg,transparent 40%, rgba(255,219,112,0.8) 45%,rgba(132,50,255,0.6) 50%,transparent 54%);
+    filter: brightness(1.2) opacity(0.8);
+    mix-blend-mode:color-dodge ;
+    background-size: 150% 150%;
+    background-position: 100%;
+    transition: all 0.01s;
+}
