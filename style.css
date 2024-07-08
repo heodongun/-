@@ -1,3 +1,10 @@
+html, body {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    width: 100%;
+}
+
 .container{
     width:220px;
     height:310px;
@@ -5,7 +12,7 @@
     position: relative;
 }
 .container1{
-    margin-left: 50px;
+    margin-left: 110px;
     width:220px;
     height:310px;
     transition: all 0.1s;
@@ -13,27 +20,13 @@
 }
 
 .container2{
-    margin-left: 50px;
+    margin-left: 110px;
     width:220px;
     height:310px;
     transition: all 0.1s;
     position: relative;
 }
 
-.container3{
-    margin-left: 50px;
-    width:220px;
-    height:310px;
-    transition: all 0.1s;
-    position: relative;
-}
-.container4{
-    margin-left: 50px;
-    width:220px;
-    height:310px;
-    transition: all 0.1s;
-    position: relative;
-}
 .container5{
     width:220px;
     height:310px;
@@ -41,7 +34,7 @@
     position: relative;
 }
 .container6{
-    margin-left: 50px;
+    margin-left: 110px;
     width:220px;
     height:310px;
     transition: all 0.1s;
@@ -49,28 +42,12 @@
 }
 
 .container7{
-    margin-left: 50px;
+    margin-left: 110px;
     width:220px;
     height:310px;
     transition: all 0.1s;
     position: relative;
 }
-
-.container8{
-    margin-left: 50px;
-    width:220px;
-    height:310px;
-    transition: all 0.1s;
-    position: relative;
-}
-.container9{
-    margin-left: 50px;
-    width:220px;
-    height:310px;
-    transition: all 0.1s;
-    position: relative;
-}
-
 .container10{
     width:220px;
     height:310px;
@@ -78,7 +55,7 @@
     position: relative;
 }
 .container11{
-    margin-left: 50px;
+    margin-left: 110px;
     width:220px;
     height:310px;
     transition: all 0.1s;
@@ -86,29 +63,33 @@
 }
 
 .container12{
-    margin-left: 50px;
+    margin-left: 110px;
+    width:220px;
+    height:310px;
+    transition: all 0.1s;
+    position: relative;
+}
+.container15{
+    width:220px;
+    height:310px;
+    transition: all 0.1s;
+    position: relative;
+}
+.container16{
+    margin-left: 110px;
     width:220px;
     height:310px;
     transition: all 0.1s;
     position: relative;
 }
 
-.container13{
-    margin-left: 50px;
+.container17{
+    margin-left: 110px;
     width:220px;
     height:310px;
     transition: all 0.1s;
     position: relative;
 }
-.container14{
-    margin-left: 50px;
-    width:220px;
-    height:310px;
-    transition: all 0.1s;
-    position: relative;
-}
-
-
 .pokemon{
     opacity: 100%;
     width:440px;
@@ -151,32 +132,6 @@
     max-height: 100%;
 }
 
-.pokemon3{
-    opacity: 100%;
-    width:440px;
-    height: 620px;
-    background-image: url(pokemon3.png);
-    background-size: cover;
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    max-width: 100%;
-    max-height: 100%;
-}
-.pokemon4{
-    opacity: 100%;
-    width:440px;
-    height: 620px;
-    background-image: url(pokemon4.png);
-    background-size: cover;
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    max-width: 100%;
-    max-height: 100%;
-}
 
 .pokemon5{
     opacity: 100%;
@@ -219,34 +174,6 @@
     max-width: 100%;
     max-height: 100%;
 }
-
-.pokemon8{
-    opacity: 100%;
-    width:440px;
-    height: 620px;
-    background-image: url(pokemon8.png);
-    background-size: cover;
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    max-width: 100%;
-    max-height: 100%;
-}
-.pokemon9{
-    opacity: 100%;
-    width:440px;
-    height: 620px;
-    background-image: url(pokemon9.png);
-    background-size: cover;
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    max-width: 100%;
-    max-height: 100%;
-}
-
 .pokemon10{
     opacity: 100%;
     width:440px;
@@ -289,11 +216,11 @@
     max-height: 100%;
 }
 
-.pokemon13{
+.pokemon15{
     opacity: 100%;
     width:440px;
     height: 620px;
-    background-image: url(pokemon13.png);
+    background-image: url(pokemon15.png);
     background-size: cover;
     position: fixed;
     top: 50%;
@@ -302,11 +229,12 @@
     max-width: 100%;
     max-height: 100%;
 }
-.pokemon14{
+
+.pokemon16{
     opacity: 100%;
     width:440px;
     height: 620px;
-    background-image: url(pokemon14.png);
+    background-image: url(pokemon16.png);
     background-size: cover;
     position: fixed;
     top: 50%;
@@ -315,6 +243,21 @@
     max-width: 100%;
     max-height: 100%;
 }
+
+.pokemon17{
+    opacity: 100%;
+    width:440px;
+    height: 620px;
+    background-image: url(pokemon17.png);
+    background-size: cover;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    max-width: 100%;
+    max-height: 100%;
+}
+
 
 .card{
     width:220px;
@@ -337,18 +280,6 @@
     background-size: cover;
 }
 
-.card3{
-    width:220px;
-    height:310px;
-    background-image: url(pokemon3.png);
-    background-size: cover;
-}
-.card4{
-    width:220px;
-    height:310px;
-    background-image: url(pokemon4.png);
-    background-size: cover;
-}
 
 .card5{
     width:220px;
@@ -370,18 +301,6 @@
     background-size: cover;
 }
 
-.card8{
-    width:220px;
-    height:310px;
-    background-image: url(pokemon8.png);
-    background-size: cover;
-}
-.card9{
-    width:220px;
-    height:310px;
-    background-image: url(pokemon9.png);
-    background-size: cover;
-}
 
 .card10{
     width:220px;
@@ -403,18 +322,27 @@
     background-size: cover;
 }
 
-.card13{
+.card15{
     width:220px;
     height:310px;
-    background-image: url(pokemon13.png);
+    background-image: url(pokemon15.png);
     background-size: cover;
 }
-.card14{
+.card16{
     width:220px;
     height:310px;
-    background-image: url(pokemon14.png);
+    background-image: url(pokemon16.png);
     background-size: cover;
 }
+
+.card17{
+    width:220px;
+    height:310px;
+    background-image: url(pokemon17.png);
+    background-size: cover;
+}
+
+
 
 
 .overlay{
@@ -443,30 +371,6 @@
 
 
 .overlay2{
-    position: absolute;
-    width:220px;
-    height:310px;
-    background: linear-gradient(150deg,transparent 40%, rgba(255,219,112,0.8) 45%,rgba(132,50,255,0.6) 50%,transparent 54%);
-    filter: brightness(1.2) opacity(0.8);
-    mix-blend-mode:color-dodge ;
-    background-size: 150% 150%;
-    background-position: 100%;
-    transition: all 0.01s;
-}
-
-.overlay3{
-    position: absolute;
-    width:220px;
-    height:310px;
-    background: linear-gradient(150deg,transparent 40%, rgba(255,219,112,0.8) 45%,rgba(132,50,255,0.6) 50%,transparent 54%);
-    filter: brightness(1.2) opacity(0.8);
-    mix-blend-mode:color-dodge ;
-    background-size: 150% 150%;
-    background-position: 100%;
-    transition: all 0.01s;
-}
-
-.overlay4{
     position: absolute;
     width:220px;
     height:310px;
@@ -516,29 +420,6 @@
     transition: all 0.01s;
 }
 
-.overlay8{
-    position: absolute;
-    width:220px;
-    height:310px;
-    background: linear-gradient(150deg,transparent 40%, rgba(255,219,112,0.8) 45%,rgba(132,50,255,0.6) 50%,transparent 54%);
-    filter: brightness(1.2) opacity(0.8);
-    mix-blend-mode:color-dodge ;
-    background-size: 150% 150%;
-    background-position: 100%;
-    transition: all 0.01s;
-}
-
-.overlay9{
-    position: absolute;
-    width:220px;
-    height:310px;
-    background: linear-gradient(150deg,transparent 40%, rgba(255,219,112,0.8) 45%,rgba(132,50,255,0.6) 50%,transparent 54%);
-    filter: brightness(1.2) opacity(0.8);
-    mix-blend-mode:color-dodge ;
-    background-size: 150% 150%;
-    background-position: 100%;
-    transition: all 0.01s;
-}
 
 .overlay10{
     position: absolute;
@@ -578,7 +459,8 @@
     transition: all 0.01s;
 }
 
-.overlay13{
+
+.overlay15{
     position: absolute;
     width:220px;
     height:310px;
@@ -590,7 +472,8 @@
     transition: all 0.01s;
 }
 
-.overlay14{
+
+.overlay16{
     position: absolute;
     width:220px;
     height:310px;
@@ -602,3 +485,30 @@
     transition: all 0.01s;
 }
 
+
+.overlay17{
+    position: absolute;
+    width:220px;
+    height:310px;
+    background: linear-gradient(150deg,transparent 40%, rgba(255,219,112,0.8) 45%,rgba(132,50,255,0.6) 50%,transparent 54%);
+    filter: brightness(1.2) opacity(0.8);
+    mix-blend-mode:color-dodge ;
+    background-size: 150% 150%;
+    background-position: 100%;
+    transition: all 0.01s;
+}
+
+.font{
+    text-align: center;
+    font-size: xx-large;
+}
+
+
+#ad {
+    width: 100%;
+    transition: all 0.3s ease-in-out;
+}
+
+.ad-container.fixed {
+    height: 0; /* 고정될 때의 부모 컨테이너 높이 설정 */
+}
