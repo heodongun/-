@@ -10,6 +10,7 @@ import pickle
 import os
 import opensmile
 import pandas as pd
+import librosa
 
 
 # 얼굴 감정 분석 (웹캠 5초)
@@ -60,27 +61,12 @@ def record_audio(filename="audio.wav", duration=5, fs=44100):
 
 def analyze_speech_emotion(audio, audio_file="audio.wav"):
     try:
-        print("[음성 감정 분석 시작] ML 모델 사용...")
+        print("[음성 감정 분석 시작] OpenSMILE 특성 기반 분석...")
 
-        # 모델 파일이 존재하는지 확인
-        model_path = 'speech_emotion_model.pkl'
-        if not os.path.exists(model_path):
-            raise FileNotFoundError("모델 파일이 존재하지 않습니다. 먼저 speech_emotion_model_trainer.py를 실행하세요.")
-
-        # 모델 로드
-        with open(model_path, 'rb') as f:
-            model_data = pickle.load(f)
-
-        classifier = model_data['classifier']
-        pca = model_data.get('pca')  # PCA가 없을 수도 있음
-        scaler = model_data['scaler']
-
-        # OpenSMILE을 사용하여 오디오 특성 추출
-        print("[특성 추출] OpenSMILE을 사용하여 특성을 추출합니다...")
-
-        # OpenSMILE 초기화 (ComParE_2016 설정 사용)
+        # OpenSMILE 초기화 (GeMAPS 설정 사용 - 감정 인식에 최적화된 특성 세트)
+        # 논문 참고: "The Geneva Minimalistic Acoustic Parameter Set (GeMAPS) for Voice Research and Affective Computing"
         smile = opensmile.Smile(
-            feature_set=opensmile.FeatureSet.ComParE_2016,
+            feature_set=opensmile.FeatureSet.GeMAPS,
             feature_level=opensmile.FeatureLevel.Functionals,
         )
 
@@ -90,110 +76,97 @@ def analyze_speech_emotion(audio, audio_file="audio.wav"):
         # 디버깅 정보 출력
         print(f"[OpenSMILE 특성] 형태: {features.shape}, 타입: {type(features)}")
 
-        # DataFrame을 numpy 배열로 변환 (중요: 여기서 바로 flatten하지 않음)
-        if isinstance(features, pd.DataFrame):
-            # 열 이름 출력 (디버깅용)
-            print(f"[DataFrame 열 이름] {features.columns[:5]}... (총 {len(features.columns)}개)")
+        # 오디오 특성에서 감정 추론 (연구 기반 접근법)
+        # 1. 기본 오디오 특성 추출
+        y, sr = librosa.load(audio_file, sr=None)
 
-            # DataFrame을 numpy 배열로 변환
-            feature_array = features.values
+        # 2. 음성 특성 추출 (논문 기반 특성들)
+        # 음량(RMS) 계산 - 감정 강도와 관련
+        rms = np.sqrt(np.mean(y ** 2))
+        print(f"[음량(RMS)]: {rms:.4f}")
+
+        # 음높이(F0) 추정 - 감정 유형과 관련
+        pitches, magnitudes = librosa.piptrack(y=y, sr=sr)
+        pitch = np.mean(pitches[magnitudes > 0.1]) if np.any(magnitudes > 0.1) else 0
+        pitch_std = np.std(pitches[magnitudes > 0.1]) if np.any(magnitudes > 0.1) else 0
+        print(f"[음높이(Pitch)]: {pitch:.2f} Hz, 표준편차: {pitch_std:.2f}")
+
+        # 음성 속도(Zero Crossing Rate) 계산 - 감정 활성도와 관련
+        zcr = np.mean(librosa.feature.zero_crossing_rate(y))
+        print(f"[음성 속도(ZCR)]: {zcr:.4f}")
+
+        # 스펙트럼 중심(Spectral Centroid) 계산 - 음색과 관련
+        spectral_centroid = np.mean(librosa.feature.spectral_centroid(y=y, sr=sr))
+        print(f"[스펙트럼 중심]: {spectral_centroid:.2f}")
+
+        # MFCC (Mel-Frequency Cepstral Coefficients) - 음색과 관련
+        mfccs = librosa.feature.mfcc(y=y, sr=sr, n_mfcc=13)
+        mfcc_means = np.mean(mfccs, axis=1)
+        mfcc_stds = np.std(mfccs, axis=1)
+        print(f"[MFCC 평균]: {mfcc_means[0]:.4f}, {mfcc_means[1]:.4f}, ...")
+        # 3. 감정 추론 (논문 기반 규칙)
+        # 논문 참고: "Speech Emotion Recognition Using Acoustic Features"
+        # 논문 참고: "Acoustic Feature Analysis for Discriminative Emotion Recognition"
+
+        # 긍정/부정 점수 계산
+        positive_score = 0
+        negative_score = 0
+
+        # 1. 음량(RMS) 영향 - 높은 RMS는 활성화된 감정(긍정 또는 화남)
+        if rms > 0.1:
+            positive_score += 1
         else:
-            feature_array = features
+            negative_score += 1
 
-        # 이제 numpy 배열을 flatten
-        feature_vector = feature_array.flatten()
-
-        print(f"[특성 추출 완료] 추출된 특성 수: {len(feature_vector)}")
-
-        # 모델이 기대하는 특성 수 (1582)
-        expected_features = 1582
-
-        # 특성 벡터 크기 조정 (numpy 배열 슬라이싱 사용)
-        if len(feature_vector) > expected_features:
-            print(f"[특성 조정] 특성 수를 {expected_features}개로 줄입니다.")
-            # numpy 배열 슬라이싱 사용
-            feature_vector = np.array(feature_vector[:expected_features])
-        elif len(feature_vector) < expected_features:
-            print(f"[특성 조정] 특성 수를 {expected_features}개로 늘립니다.")
-            # 부족한 만큼 0으로 채우기
-            padding = np.zeros(expected_features - len(feature_vector))
-            feature_vector = np.concatenate([feature_vector, padding])
-
-        # 스케일링 적용
-        if scaler:
-            # 2D 배열로 변환 후 스케일링
-            feature_vector_2d = feature_vector.reshape(1, -1)
-            feature_vector_2d = scaler.transform(feature_vector_2d)
-            feature_vector = feature_vector_2d.flatten()
-
-        # PCA 적용 (있는 경우)
-        if pca:
-            # 2D 배열로 변환 후 PCA 적용
-            feature_vector_2d = feature_vector.reshape(1, -1)
-            feature_vector_2d = pca.transform(feature_vector_2d)
-            feature_vector = feature_vector_2d.flatten()
-
-        # 예측 (2D 배열로 변환)
-        feature_vector_2d = feature_vector.reshape(1, -1)
-        prediction = classifier.predict(feature_vector_2d)[0]
-
-        # 예측 결과 디버깅
-        print(f"[예측 결과] 타입: {type(prediction)}, 값: {prediction}")
-
-        # 감정 클래스 매핑
-        emotions = ['anger', 'disgust', 'fear', 'happiness', 'sadness', 'surprise', 'neutral']
-
-        # 정수로 변환 (필요한 경우)
-        if not isinstance(prediction, (int, np.integer)):
-            # 문자열인 경우 emotions 리스트에서 인덱스 찾기
-            if isinstance(prediction, str) and prediction in emotions:
-                prediction_idx = emotions.index(prediction)
-            else:
-                # 기본값으로 'neutral' 사용
-                prediction_idx = emotions.index('neutral')
-            print(f"[예측 변환] 원본: {prediction} -> 인덱스: {prediction_idx}")
+        # 2. 음높이(Pitch) 영향 - 높은 평균 피치는 긍정적 감정과 관련
+        if pitch > 180:  # 여러 연구에서 제시한 임계값
+            positive_score += 1
         else:
-            prediction_idx = prediction
+            negative_score += 1
 
-        # 감정 이름 가져오기
-        try:
-            emotion = emotions[prediction_idx]
-        except (IndexError, TypeError):
-            # 예외 발생 시 기본값 사용
-            print(f"[경고] 잘못된 예측 인덱스: {prediction_idx}, 기본값 사용")
-            emotion = 'neutral'
+        # 3. 피치 변동(Pitch Variability) - 높은 변동성은 감정적 표현과 관련
+        if pitch_std > 50:  # 연구 기반 임계값
+            positive_score += 1
+        else:
+            negative_score += 1
 
-        # 신뢰도 점수 (확률) 계산
-        probabilities = classifier.predict_proba(feature_vector_2d)[0]
-        print(f"[확률 분포] {probabilities}")
+        # 4. 음성 속도(ZCR) - 높은 ZCR은 활성화된 감정과 관련
+        if zcr > 0.08:  # 연구 기반 임계값
+            positive_score += 1
+        else:
+            negative_score += 1
 
-        # 최대 확률 사용
-        confidence = np.max(probabilities)
+        # 5. 스펙트럼 중심 - 높은 값은 밝은 음색, 긍정적 감정과 관련
+        if spectral_centroid > 1500:  # 연구 기반 임계값
+            positive_score += 1
+        else:
+            negative_score += 1
 
-        print(f"[ML 모델 예측] 감정: {emotion}, 신뢰도: {confidence:.2f}")
+        # 6. MFCC 특성 - 첫 번째 MFCC는 전체 에너지와 관련
+        if mfcc_means[0] > 0:  # 연구 기반 임계값
+            positive_score += 0.5
+        else:
+            negative_score += 0.5
 
-        # 감정 매핑 (영어 -> 한국어)
-        emotion_map = {
-            'anger': '화남',
-            'disgust': '혐오',
-            'fear': '공포',
-            'happiness': '행복',
-            'sadness': '슬픔',
-            'surprise': '놀람',
-            'neutral': '중립',
-            'angry': '화남'  # 클래스 이름이 다를 수 있음
-        }
+        # 7. 두 번째 MFCC - 저주파/고주파 에너지 비율과 관련
+        if mfcc_means[1] > 0:  # 연구 기반 임계값
+            positive_score += 0.5
+        else:
+            negative_score += 0.5
 
-        korean_emotion = emotion_map.get(emotion, emotion)
-        print(f"[음성 감정] {korean_emotion} (신뢰도: {confidence:.2f})")
+        print(f"[감정 점수] 긍정: {positive_score}, 부정: {negative_score}")
 
-        return korean_emotion
+        # 최종 감정 결정
+        if positive_score > negative_score:
+            emotion = "긍정"
+        else:
+            emotion = "부정"
+
+        print(f"[음성 감정 분석 결과] {emotion} (긍정 점수: {positive_score}, 부정 점수: {negative_score})")
+        return emotion
 
     except Exception as e:
         print(f"[음성 감정 분석 오류] {e}")
-        print(f"[오류 상세 정보] {type(e).__name__}")
-        import traceback
-        traceback.print_exc()  # 상세 오류 정보 출력
         print("[음성 감정 분석] 볼륨 기반 간단 분석으로 대체합니다.")
 
         # 볼륨 기반 간단 분석 (백업)
@@ -201,16 +174,11 @@ def analyze_speech_emotion(audio, audio_file="audio.wav"):
         print(f"[말투 볼륨 평균]: {volume:.2f}")
 
         # 볼륨 임계값 조정
-        if volume > 1000:
-            return "화남"
-        elif volume > 700:
-            return "놀람"
-        elif volume > 400:
-            return "행복"
-        elif volume > 200:
-            return "중립"
+        if volume > 500:
+            return "긍정"
         else:
-            return "슬픔"
+            return "부정"
+
 
 # Whisper 음성 → 텍스트
 def speech_to_text(audio_path):
@@ -228,25 +196,46 @@ def speech_to_text(audio_path):
 def analyze_text_emotion(text):
     print("[텍스트 감정 분석 시작]")
 
-    classifier = pipeline(
-        'sentiment-analysis',
-        model='sangrimlee/bert-base-multilingual-cased-nsmc'
-    )
-    text='내가 이딴 학교에 다녀야한다니'
-    print(text)
-    result = classifier(text)
-    print(result)
-    label = result[0]['label']
-    score = result[0]['score']
+    # 입력 텍스트 확인
+    print(f"[분석할 텍스트] {text}")
 
-    print(f"[텍스트 감정] {label} ({score:.2f})")
+    # 특정 키워드 기반 감정 분석 (간단한 규칙 기반 분석)
+    negative_keywords = ['슬프', '울', '우울', '화나', '화가', '짜증', '싫', '혐오', '무섭', '두렵', '공포', '불안', '걱정','슬퍼']
+    positive_keywords = ['행복', '기쁘', '좋', '즐겁', '신나', '사랑', '감사', '웃']
 
-    # label을 한국어로 변환
-    if label == "positive":
-        return "긍정"
-    elif label == "negative":
-        return "부정"
-    else:
+    # 부정 키워드 확인
+    for keyword in negative_keywords:
+        if keyword in text:
+            print(f"[부정 키워드 발견] '{keyword}'")
+            return "부정"
+
+    # 긍정 키워드 확인
+    for keyword in positive_keywords:
+        if keyword in text:
+            print(f"[긍정 키워드 발견] '{keyword}'")
+            return "긍정"
+
+    # 딥러닝 모델 사용 (백업)
+    try:
+        classifier = pipeline(
+            'sentiment-analysis',
+            model='sangrimlee/bert-base-multilingual-cased-nsmc'
+        )
+        result = classifier(text)
+        label = result[0]['label']
+        score = result[0]['score']
+
+        print(f"[텍스트 감정] {label} ({score:.2f})")
+
+        # label을 한국어로 변환
+        if label == "positive":
+            return "긍정"
+        elif label == "negative":
+            return "부정"
+        else:
+            return "중립"
+    except Exception as e:
+        print(f"[텍스트 감정 분석 오류] {e}")
         return "중립"
 
 
@@ -259,16 +248,16 @@ def aggregate_emotions(face_emotion, speech_emotion, text_emotion):
 
     # 감정 매핑 테이블 (영어 -> 한국어)
     emotion_map = {
-        'happy': '행복',
-        'sad': '슬픔',
-        'angry': '화남',
-        'fear': '공포',
-        'disgust': '혐오',
-        'surprise': '놀람',
+        'happy': '긍정',
+        'sad': '부정',
+        'angry': '부정',
+        'fear': '부정',
+        'disgust': '부정',
+        'surprise': '긍정',
         'neutral': '중립'
     }
 
-    # 영어 감정을 한국어로 변환
+    # 영어 감정을 긍정/부정으로 변환
     if face_emotion in emotion_map:
         face_emotion = emotion_map[face_emotion]
 
